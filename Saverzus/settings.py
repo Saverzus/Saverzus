@@ -106,14 +106,29 @@ CHANNEL_LAYERS = {
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
+DEBUG="False"
 
+AWS_ACCESS_KEY_ID="CACHV3KFIEZF4KNHZ474 "
+AWS_SECRET_ACCESS_KEY="AH1zBdQbg6RyeBdox5lNY8iSytyTnhKUPyZePdsbh/A"
+AWS_STORAGE_BUCKET_NAME="saverzus-chat-demo"
+AWS_S3_ENDPOINT_URL="https://fra1.digitaloceanspaces.com"
+AWS_LOCATION="saverzus-chat-static"
+
+DB_NAME="pogchat_db"
+DB_USER="django"
+DB_PASSWORD="password"
+
+EMAIL_HOST_USER="Saverzuz@gmail.com"
+EMAIL_HOST_PASSWORD="kn1781bwe6lk17"
+
+PROJECT_NAME="Saverzus"
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': config("DB_NAME"),
-        'USER': config("BD_USER"),
-        'PASSWORD': config("DB_PASSWORD"),
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSWORD,
         'HOST': 'localhost',
         'PORT': '',
     }
