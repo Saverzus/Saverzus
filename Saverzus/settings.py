@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '@b^_$f(^enz#y10z)-631&y7+nd!#zy9c^(zy%=+m(pikvwoj#'
+SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
@@ -107,17 +107,15 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DB_NAME = "saverzus_db"
-BD_USER = "django"
-DB_PASSWORD = "password"
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': DB_NAME,
-        'USER': BD_USER,
-        'PASSWORD': DB_PASSWORD,
+        'NAME': config("DB_NAME"),
+        'USER': config("BD_USER"),
+        'PASSWORD': config("DB_PASSWORD"),
         'HOST': 'localhost',
-        'PORT': '5432',
+        'PORT': '',
     }
 }
 
