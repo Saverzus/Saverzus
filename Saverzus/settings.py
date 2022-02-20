@@ -36,7 +36,7 @@ WSGI_APPLICATION = f'{config("PROJECT_NAME")}.wsgi.application'
 ASGI_APPLICATION = f'{config("PROJECT_NAME")}.routing.application'
 
 #потом добавлю сюда ссылку на сайт аля 'saverzus.ru'
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['164.92.205.211']
 
 AUTH_USER_MODEL = "account.Account"
 AUTHENTICATION_BACKENDS = (
