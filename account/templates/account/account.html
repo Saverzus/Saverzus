@@ -1,0 +1,375 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+        <main class="profile">
+            <div class="background-info">
+                <div class="avatar">
+                    <img src="{% static 'images/avatars/dummy_image.png' %}" alt="Аватар" id="id_profile_image">
+                </div>
+                <div class="background">
+                    <img src="{% static 'images/backgrounds/fon.png' %}" alt="">
+                </div>
+                <div class="info">
+                    <div class="name active">
+                        <p>{{username}}</p>
+                        <p><i class="fas fa-circle online"></i></p>
+                        
+                    </div>
+                    <div class="nav">
+                        <ul>
+                            <li>
+                                <a class="active" href="#">Стена</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'friend:list' user_id=id %}">Друзья ({{friends|length}})</a>
+                            </li>
+                            {% if is_self %}
+                            <li>
+                                <a href="{% url 'friend:friend-requests' user_id=id %}">Заявки в друзья ({{friend_requests|length}})</a>
+                            </li>
+                            {% endif %}
+                            <!--
+                            <li>
+                                <a href="photo.html">Фото</a>
+                            </li>
+                            -->
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="email_and_change"> 
+                {% if is_self %}
+                    <p><a href="{% url 'account:edit' user_id=id %}">Изменить</a></p>
+                    {% if hide_email %}
+			  		    <p>**********</p>
+			  	    {% else %}
+			  		    <p>{{email}}</p>
+			  	    {% endif %}
+                {% else %}
+                    {% if request.user.is_authenticated %}
+
+                        <p onclick="createOrReturnPrivateChat('{{id}}')">Написать</p>
+                        
+                        {% if hide_email %}
+                            <p style="margin-left: 10px">**********</p>
+                        {% else %}
+                            <p style="margin-left: 10px">{{email}}</p>
+                        {% endif %}
+
+                        
+                        {% if request_sent == 0 %}
+                            <p style="margin-left: 10px" id="id_cancel_{{id}}" onclick='triggerDeclineFriendRequest("{{pending_friend_request_id}}")'>Отклонить</p>
+                            <p id="id_confirm_{{id}}" onclick='triggerAcceptFriendRequest("{{pending_friend_request_id}}")'>Принять заявку в друзья</p>
+                        {% endif %}
+
+                        {% if is_friend == False and is_self == False %}
+                            <!-- Я отправляю запрос -->
+                            {% if request_sent == 1 %}
+                            <p><button id="id_cancel_friend_request_btn">Отменить заявку в друзья</button></p>
+                            {% endif %}
+                            <!-- Не было отправленно запроса -->
+                            {% if request_sent == -1 %}
+                            <p><button id="id_send_friend_request_btn">Добавить в друзья</button></p>                        
+                            {% endif %}
+                        {% endif %}
+
+                        {% if is_friend %}
+                            <p onclick="removeFriend('{{id}}', onFriendRemoved)"> Удалить из друзей </p>
+                        {% endif %}
+
+                    {% endif %}
+                {% endif %}
+                
+            </div>
+
+            <!--
+            {% if request.user.is_authenticated %}
+            <div class="email_and_change">
+
+			    {% if request_sent == 0 %}
+                    <div>
+                        <span> Запрос на дружбу: </span>
+					    <span id="id_cancel_{{id}}" onclick='triggerDeclineFriendRequest("{{pending_friend_request_id}}")'>Отклонить</span>
+  					    <span id="id_confirm_{{id}}" onclick='triggerAcceptFriendRequest("{{pending_friend_request_id}}")'>Принять</span>
+                    </div>
+                {% endif %}
+
+                {% if is_friend == False and is_self == False %}
+
+                    {% if request_sent == 1 %}
+                        <p><button id="id_cancel_friend_request_btn">Отменить заявку в друзья</button></p>
+                    {% endif %}
+
+                    {% if request_sent == -1 %}
+                        <p><button id="id_send_friend_request_btn">Добавить в друзья</button></p>                        
+                    {% endif %}
+                {% endif %}
+            -->
+                <!--
+                {% if is_friend %}
+                    <div class="dropdown pt-4 m-auto">
+                        <button class="btn btn-secondary dropdown-toggle friends-btn" type="button" id="id_friends_toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Друг</button>
+                        <div class="dropdown-menu" aria-labelledby="id_friends_toggle">
+                            <a class="dropdown-item" href="#" onclick="removeFriend('{{id}}', onFriendRemoved)">Удалить из друзей</a>
+                        </div>
+                    </div>
+                {% endif %}           
+                -->
+<!--
+                {% if is_friend %}
+				<div class="d-flex flex-row align-items-center btn btn-primary m-2 px-4" onclick="createOrReturnPrivateChat('{{id}}')">
+					<span class="material-icons m-auto"> Написать </span>
+				</div>
+			    {% endif %}
+
+
+            {% endif %}
+
+            </div>
+-->
+            <!--
+            <div class="new-post">
+                <div class="textarea">
+                    <textarea id="w3review" name="w3review" placeholder="Что нового?" rows="3" cols="50"></textarea>
+                </div>
+
+                <div class="settings">
+                    <div class="category-slug">
+                        <div class="category">
+                            <label for="cats">Категория</label>
+                            <select id="cats" >
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                            </select>
+                        </div>
+
+                        <div class="slug">
+                            <input type="text" value="Введите slug" name="slug" id="slug">
+                        </div>
+                    </div>
+
+                    <div class="send">
+                        <button type="submit" form="nameform" value="Submit">Поделиться</button>
+                    </div>
+                </div>
+            </div>
+            -->
+<!--
+            <div class="add_to_friends" style="display: flex; margin: 20px 30px;">
+                <a href="#" style="color: white; border: 1px solid black; padding: 10px 20px; border-radius: 10px; background: #1F1D2B;"> Добавить пост</a>
+                <a href="#" style="color: white; border: 1px solid black; padding: 10px 20px; border-radius: 10px; background: #1F1D2B; margin-left: 10px;"> Добавить в друзья</a>
+                <a href="#" style="color: white; border: 1px solid black; padding: 10px 20px; border-radius: 10px; background: #1F1D2B; margin-left: 10px;"> Друзей - 10</a>
+            </div>
+ -->
+
+ <!--
+            <div class="posts">
+
+                <div class="post">
+                    <div class="user-info">
+                        <div class="img">
+                            <img src="{{request.user.profile_image.url}}" alt="">
+                        </div>
+                        <div class="name-time">
+                            <p>Богдан Трофименко</p>
+                            <p>10 часов назад</p>
+                        </div>
+                    </div>
+                    <div class="text">
+                        <h1>Заголовок</h1>
+                        <p>
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus quo, non quisquam labore ducimus placeat.
+                        </p>
+                    </div>
+                    <div class="img">
+                        <img src="/images/images/2.png" alt="">
+                    </div>
+                </div>
+
+
+                <div class="post">
+                    <div class="user-info">
+                        <div class="img">
+                            <img src="{{request.user.profile_image.url}}" alt="">
+                        </div>
+                        <div class="name-time">
+                            <p>Богдан Трофименко</p>
+                            <p>10 часов назад</p>
+                        </div>
+                    </div>
+                    <div class="text">
+                        <h1>Заголовок</h1>
+                        <p>
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo expedita, ipsum accusantium maiores ratione aliquam?
+                        </p>
+                    </div>
+                    <div class="img">
+                        <img src="/images/images/3.png" alt="">
+                    </div>
+                </div>
+
+                <div class="post">
+                    <div class="user-info">
+                        <div class="img">
+                            <img src="{{request.user.profile_image.url}}" alt="">
+                        </div>
+                        <div class="name-time">
+                            <p>Богдан Трофименко</p>
+                            <p>10 часов назад</p>
+                        </div>
+                    </div>
+                    <div class="text">
+                        <h1>Заголовок</h1>
+                        <p>
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo expedita, ipsum accusantium maiores ratione aliquam?
+                        </p>
+                    </div>
+                    <div class="img">
+                        <img src="/images/images/3.png" alt="">
+                    </div>
+                </div>
+
+                <div class="post">
+                    <div class="user-info">
+                        <div class="img">
+                            <img src="{{request.user.profile_image.url}}" alt="">
+                        </div>
+                        <div class="name-time">
+                            <p>Богдан Трофименко</p>
+                            <p>10 часов назад</p>
+                        </div>
+                    </div>
+                    <div class="text">
+                        <h1>Заголовок</h1>
+                        <p>
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo expedita, ipsum accusantium maiores ratione aliquam?
+                        </p>
+                    </div>
+                    <div class="img">
+                        <img src="/images/images/3.png" alt="">
+                    </div>
+                </div>
+
+                <div class="post">
+                    <div class="user-info">
+                        <div class="img">
+                            <img src="{{request.user.profile_image.url}}" alt="">
+                        </div>
+                        <div class="name-time">
+                            <p>Богдан Трофименко</p>
+                            <p>10 часов назад</p>
+                        </div>
+                    </div>
+                    <div class="text">
+                        <h1>Заголовок</h1>
+                        <p>
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo expedita, ipsum accusantium maiores ratione aliquam?
+                        </p>
+                    </div>
+                    <div class="img">
+                        <img src="/images/images/3.png" alt="">
+                    </div>
+                </div>
+
+            </div>
+        -->
+        </main>
+
+
+
+<script type="text/javascript">
+
+    function preloadCallback(src, elementId){
+        var img = document.getElementById(elementId)
+        img.src = src
+    }
+
+    function preloadImage(imgSrc, elementId){
+        // console.log("attempting to load " + imgSrc + " on element " + elementId)
+        var objImagePreloader = new Image();
+        objImagePreloader.src = imgSrc;
+        if(objImagePreloader.complete){
+            preloadCallback(objImagePreloader.src, elementId);
+            objImagePreloader.onload = function(){};
+        }
+        else{
+            objImagePreloader.onload = function() {
+                preloadCallback(objImagePreloader.src, elementId);
+                objImagePreloader.onload=function(){};
+            }
+        }
+    }
+    
+	preloadImage("{{profile_image|safe}}", 'id_profile_image')
+
+	function onFriendRequestSent(){
+		location.reload();
+	}
+
+	function onFriendRequestCancelled(){
+		location.reload();
+	}
+
+	function onFriendRemoved(){
+		location.reload();
+	}
+
+	function onFriendRequestAccepted(){
+		location.reload();
+	}
+
+	function onFriendRequestDeclined(){
+		location.reload();
+	}
+
+    function id_send_friend_request_btn(){
+        
+    }
+	var sendFriendRequestBtn = document.getElementById("id_send_friend_request_btn")
+	if (sendFriendRequestBtn != null){
+		sendFriendRequestBtn.addEventListener("click", function(){
+			sendFriendRequest("{{id}}", onFriendRequestSent)
+		})
+	}
+
+	var cancelFriendRequestBtn = document.getElementById("id_cancel_friend_request_btn")
+	if(cancelFriendRequestBtn != null){
+		cancelFriendRequestBtn.addEventListener("click", function(){
+			cancelFriendRequest("{{id}}", onFriendRequestCancelled)
+		})
+	}
+
+	var removeFriendBtn = document.getElementById("id_unfriend_btn")
+	if (removeFriendBtn != null){
+		removeFriendBtn.addEventListener("click", function(){
+			removeFriend("{{id}}", onFriendRemoved)
+		})
+	}
+
+	function triggerAcceptFriendRequest(friend_request_id){
+		acceptFriendRequest(friend_request_id, onFriendRequestAccepted)
+	}
+
+	function triggerDeclineFriendRequest(friend_request_id){
+		declineFriendRequest(friend_request_id, onFriendRequestDeclined)
+	}
+
+	
+</script>
+
+{% include 'friend/snippets/send_friend_request.html' %}
+{% include 'friend/snippets/accept_friend_request.html' %}
+{% include 'friend/snippets/decline_friend_request.html' %}
+{% include 'friend/snippets/cancel_friend_request.html' %}
+{% include 'friend/snippets/remove_friend.html' %}
+{% include 'chat/snippets/create_or_return_private_chat.html' %}
+
+
+
+{% endblock content %}

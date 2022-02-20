@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<main class="profile">
+
+    <!--
+    <div class="background-info">
+        <div class="avatar">
+            <img src="{{profile_image}}" alt="Аватар" id="id_profile_image">
+        </div>
+        <div class="background">
+            <img src="{% static 'images/backgrounds/fon.png' %}" alt="">
+        </div>
+        <div class="info">
+            <div class="name active">
+                <p>{{request.sender.username}}</p>
+                <p><i class="fas fa-circle online"></i></p>
+                
+            </div>
+            <div class="nav">
+                <ul>
+                    <li>
+                        <a href="#">Стена</a>
+                    </li>
+                    <li>
+                        <a href="friends.html">Друзья ({{friends|length}})</a>
+                    </li>
+                    <li>
+                        <a class="active" href="#">Заявки в друзья ({{friend_requests|length}})</a>
+                    </li>
+                    <li>
+                        <a href="photo.html">Фото</a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+    -->
+
+
+
+    <div class="friends-container">
+                
+        <div class="friends_list">
+        <!--
+            <div class="search_count">
+                <div class="search">
+                    <input type="text" placeholder="Поиск">
+                </div>
+                <div class="count">
+                    <p>Друзей - 3</p>
+                </div>
+            </div>-->
+
+            <div class="friends">
+                <!-- Друг -->
+            
+                {% if friends %}
+                {% for friend in friends %}
+                <div class="friend">
+                    <a href="{% url 'account:view' user_id=friend.0.pk %}" class="friend_a">
+                        <div class="avatar">
+                            <img src="{{friend.0.profile_image.url}}" alt="">
+                            
+                            <div class="friend_status">
+                                <p> <i class="fa fa-check-circle" aria-hidden="true"></i> </p>
+                                <!-- <p> <i class="fa fa-plus-circle" aria-hidden="true"></i> </p> -->
+                            </div>
+                        </div>
+                        <div class="background">
+                            <img src="{% static 'images/backgrounds/fon.png' %}" alt="">
+                        </div>
+
+                        <div class="name_status"> 
+                            <p>{{friend.0.username|truncatechars:50}}</p>              
+                            <p><i class="fas fa-circle online"></i></p>                                                                           
+                        </div>
+                    </a>
+                    
+                    <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+                        {% if friend.1 %}
+                            <a href="#" onclick="createOrReturnPrivateChat('{{friend.0.id}}')">Написать</a>
+                        {% endif %}
+                        {% if friend.1 %}
+                            <span id="id_cancel_{{request.sender.id}}" style="cursor: pointer; padding: 1%;">Друг</span>
+                        {% else %}
+                            {% if friend.0 != request.user %}
+                                <span id="id_cancel_{{request.sender.id}}" style="cursor: pointer; padding: 1%;"></span>
+                            {% endif %}
+                        {% endif%}
+                        {% if friend.0 == request.user %}
+                            <span id="id_cancel_{{request.sender.id}}" style="cursor: pointer; padding: 1%;">Вы</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+                
+                {% else %}
+                    <div class="d-flex flex-row flex-grow-1 justify-content-center align-items-center p-4">
+                        <p>No results</p>
+                    </div>
+                {% endif %}
+            
+                <!-- Друг -->
+            </div>
+        </div>
+
+        <!-- <div class="friends_settings">
+            <a href="friends.html"><p>Мои друзья</p></a>
+            <a href="friends.html"><p>Заявки в друзья</p></a>
+            <a href="friends.html"><p>Поиск друзей</p></a>
+        </div> -->
+    </div>
+</main>
+
+{% include 'chat/snippets/create_or_return_private_chat.html' %}
+
+{% endblock content %}

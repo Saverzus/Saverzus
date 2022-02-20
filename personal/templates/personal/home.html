@@ -1,0 +1,546 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style type="text/css">
+    .chat_log {
+        height: 500px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding: 10px;
+        background-color: #fff;
+        font-size: 0.9em;
+        flex-direction: column-reverse;
+        background: #1F1D2B;
+        border-radius: 10px;
+    }
+    .chat_message{
+        display: flex;
+        margin-top: 1%;
+    }
+    .chat_message textarea{
+        color: white;
+        padding: 10px;
+        width: 100%;
+        background: #1F1D2B;
+        border-radius: 10px;
+    }
+    .chat_message button {}
+    .profile-image{
+        width: 33px;
+        height: 33px;
+        margin-top: 0px;
+        margin-bottom: auto;
+    }
+    
+    .d-flex {
+        display: flex;
+    }
+    .flex-row {
+        flex-direction: row;
+    }
+    .rounded-circle{
+        border-radius: 50%;
+    }
+    .flex-column{
+        flex-direction: column;
+    }
+    .msg-p{
+        margin-left: 15px;
+        color: white;
+        
+        white-space: normal;
+        -ms-word-break: break-all;
+        word-break: break-all;
+    }
+    .d-flex span {
+        display: flex;
+        margin-left: 15px;
+    }
+    .chat-box{
+        margin-bottom: 10px;
+        display: flex;
+        margin-left: 10px;
+    }
+    .justify-cont{
+        justify-content: space-around;
+    }
+    .name-cont{
+        justify-content: flex-start;
+    }
+
+    .profile-image{
+        width: 55px;
+        height: 55px;
+        margin-top: 0px;
+        margin-bottom: auto;
+    }
+    .profile-image:hover{
+        cursor: pointer;
+    }
+    .d-flex span:hover{
+        cursor: pointer;
+    }
+
+
+
+    /* бустрап скопировал*/
+/*
+    .d-none{display:none!important}
+    .btn{pointer-events:none;filter:none;opacity:.65}
+    .btn-primary{color:#fff;background-color:#0d6efd;border-color:#0d6efd}.btn-primary:hover{color:#fff;background-color:#0b5ed7;border-color:#0a58ca}.btn-check:focus+.btn-primary,.btn-primary:focus{color:#fff;background-color:#0b5ed7;border-color:#0a58ca;box-shadow:0 0 0 .25rem rgba(49,132,253,.5)}.btn-check:active+.btn-primary,.btn-check:checked+.btn-primary,.btn-primary.active,.btn-primary:active,.show>.btn-primary.dropdown-toggle{color:#fff;background-color:#0a58ca;border-color:#0a53be}.btn-check:active+.btn-primary:focus,.btn-check:checked+.btn-primary:focus,.btn-primary.active:focus,.btn-primary:active:focus,.show>.btn-primary.dropdown-toggle:focus{box-shadow:0 0 0 .25rem rgba(49,132,253,.5)}.btn-primary.disabled,.btn-primary:disabled{color:#fff;background-color:#0d6efd;border-color:#0d6efd}
+    .modal{position:fixed;top:0;left:0;z-index:1055;display:none;width:100%;height:100%;overflow-x:hidden;overflow-y:auto;outline:0}
+    .fade{transition:none}}
+    .modal-dialog{position:relative;width:auto;margin:.5rem;pointer-events:none}.modal.fade .modal-dialog{transition:transform .3s ease-out;transform:translate(0,-50px)}@media (prefers-reduced-motion:reduce){.modal.fade .modal-dialog{transition:none}}.modal.show .modal-dialog{transform:none}.modal.modal-static .modal-dialog{transform:scale(1.02)}.modal-dialog-scrollable{height:calc(100% - 1rem)}.modal-dialog-scrollable .modal-content{max-height:100%;overflow:hidden}.modal-dialog-scrollable .modal-body{overflow-y:auto}.modal-dialog-centered{display:flex;align-items:center;min-height:calc(100% - 1rem)}.modal-content{position:relative;display:flex;flex-direction:column;width:100%;pointer-events:auto;background-color:#fff;background-clip:padding-box;border:1px solid rgba(0,0,0,.2);border-radius:.3rem;outline:0}.modal-backdrop{position:fixed;top:0;left:0;z-index:1050;width:100vw;height:100vh;background-color:#000}.modal-backdrop.fade{opacity:0}.modal-backdrop.show{opacity:.5}.modal-header{display:flex;flex-shrink:0;align-items:center;justify-content:space-between;padding:1rem 1rem;border-bottom:1px solid #dee2e6;border-top-left-radius:calc(.3rem - 1px);border-top-right-radius:calc(.3rem - 1px)}.modal-header .btn-close{padding:.5rem .5rem;margin:-.5rem -.5rem -.5rem auto}.modal-title{margin-bottom:0;line-height:1.5}.modal-body{position:relative;flex:1 1 auto;padding:1rem}.modal-footer{display:flex;flex-wrap:wrap;flex-shrink:0;align-items:center;justify-content:flex-end;padding:.75rem;border-top:1px solid #dee2e6;border-bottom-right-radius:calc(.3rem - 1px);border-bottom-left-radius:calc(.3rem - 1px)}.modal-footer>*{margin:.25rem}@media (min-width:576px){.modal-dialog{max-width:500px;margin:1.75rem auto}.modal-dialog-scrollable{height:calc(100% - 3.5rem)}
+    .modal-content{max-height:100%;overflow:hidden}
+    .modal-header{display:flex;flex-shrink:0;align-items:center;justify-content:space-between;padding:1rem 1rem;border-bottom:1px solid #dee2e6;border-top-left-radius:calc(.3rem - 1px);border-top-right-radius:calc(.3rem - 1px)}
+    .modal-title{margin-bottom:0;line-height:1.5}
+    .btn-close{position:absolute;top:0;right:0;z-index:2;padding:1.25rem 1rem}
+*/
+
+    .timestamp-span{
+        font-weight: 400;
+        font-size: 0.8em;
+        color: var(--secondary-text-color);
+    }
+    .timestamp-span:hover{
+        cursor: pointer;
+    }
+    .align-items-center{
+        align-items: center;
+    }
+    #id_chatroom_loading_spinner{
+		position: absolute;
+	}
+    .d-none{
+        display: none;
+    }
+
+
+    .d-flex-loader{
+        display: flex;
+    }
+    .flex-column{
+        flex-direction: column;
+    }
+    .flex-row{
+        flex-direction: row;
+    }
+    .justify-content-center{
+        justify-content: center;
+    }
+    @-webkit-keyframes spinner-border{to{transform:rotate(360deg)}}@keyframes spinner-border{to{transform:rotate(360deg)}}.spinner-border{display:inline-block;width:2rem;height:2rem;vertical-align:-.125em;border:.25em solid currentColor;border-right-color:transparent;border-radius:50%;-webkit-animation:.75s linear infinite spinner-border;animation:.75s linear infinite spinner-border}.spinner-border-sm{width:1rem;height:1rem;border-width:.2em}@-webkit-keyframes spinner-grow{0%{transform:scale(0)}50%{opacity:1;transform:none}}@keyframes spinner-grow{0%{transform:scale(0)}50%{opacity:1;transform:none}}.spinner-grow{display:inline-block;width:2rem;height:2rem;vertical-align:-.125em;background-color:currentColor;border-radius:50%;opacity:0;-webkit-animation:.75s linear infinite spinner-grow;animation:.75s linear infinite spinner-grow}.spinner-grow-sm{width:1rem;height:1rem}@media (prefers-reduced-motion:reduce){.spinner-border,.spinner-grow{-webkit-animation-duration:1.5s;animation-duration:1.5s}}.offcanvas{position:fixed;bottom:0;z-index:1045;display:flex;flex-direction:column;max-width:100%;visibility:hidden;background-color:#fff;background-clip:padding-box;outline:0;transition:transform .3s ease-in-out}@media (prefers-reduced-motion:reduce){.offcanvas{transition:none}}.offcanvas-backdrop{position:fixed;
+
+    .connected-users{
+	    color: red;
+    }
+    .connected-users-icon{
+        color: red;
+    }
+    .connected-users-icon:hover{
+        cursor: default;
+    }
+</style>
+
+
+
+
+<main class="lenta">
+
+{% if debug %}
+Страница пагинации
+{% endif %}
+<span class="{% if not debug %}d-none{% endif %} page-number" id="id_page_number">1</span>
+
+    <div class="container">
+        <div class="d-flex-loader flex-column">
+<!--
+            <div class="d-flex flex-row align-items-center">
+                <span style="margin-bottom: 10px;"><i class="fa fa-users" aria-hidden="true"></i></span>
+                <span class="m-auto connected-users" id="id_connected_users"></span>
+            </div>
+-->
+            <div class="d-flex-loader flex-row justify-content-center" id="id_chatroom_loading_spinner_container">
+                <div class="spinner-border text-primary"  id="id_chatroom_loading_spinner" role="status"  style="display: none;">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+
+            <div class="d-flex chat_log" id="id_chat_log">
+                
+            </div>
+
+            <div class="chat_message d-flex chat-message-input-container">
+                <textarea class="flex-grow-1 chat-message-input" id="id_chat_message_input"></textarea>
+                <button class="btn btn-primary chat-message-submit-button">
+                    <span id="id_chat_message_submit" class="material-icons">Отправить
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script type="text/javascript">
+	
+        function validateText(str)
+        {
+            var md = window.markdownit({
+                highlight: function (str, lang) {
+                    if (lang && hljs.getLanguage(lang)) {
+                        try {
+                            return '<pre class="hljs"><code>' +
+                                hljs.highlight(lang, str, true).value +
+                                '</code></pre>';
+                        } catch (__) {}
+                    }
+                    return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
+                },
+                linkify: true,
+            });
+            var result = md.render(str);
+            return result
+        }
+
+        // Correctly decide between ws:// and wss://
+        var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+        {% if debug_mode %}
+            var ws_path = ws_scheme + '://' + window.location.host + "/public_chat/{{room_id}}/"; // development
+        {% else %}
+            var ws_path = ws_scheme + '://' + window.location.host + ":8001/public_chat/{{room_id}}/"; // production
+        {% endif %}
+        var public_chat_socket = new WebSocket(ws_path);
+
+        public_chat_socket.onmessage = function(message) {
+            console.log("Got chat websocket message " + message.data);
+            var data = JSON.parse(message.data);
+
+            // display the progress bar?
+		    displayChatroomLoadingSpinner(data.display_progress_bar)
+
+            // Handle errors (ClientError)
+            if (data.error) {
+                console.error(data.error + ": " + data.message)
+                showClientErrorModal(data.message)
+                return;
+            }
+
+            if(data.join){
+                getRoomChatMessages()
+                console.log(data.username + " присоединился к чату")
+            }
+
+            // Handle getting a message
+            if (data.msg_type == 0) {
+                appendChatMessage(data, true, true)
+            }
+            else if(data.msg_type == 1) {
+                setConnectedUserCount(data.connected_user_count)
+            }
+
+            if (data.messages_payload){
+                console.log("PAYLOAD")
+                handleMessagesPayload(data.messages, data.new_page_number)
+            }
+        };
+
+        public_chat_socket.addEventListener("open", function(e){
+            console.log("Public ChatSocket OPEN")
+            // присоединение в комнате чата
+            if("{{request.user.is_authenticated}}"){
+                public_chat_socket.send(JSON.stringify({
+                    "command": "join",
+                    "room": "{{room_id}}"
+                }));
+            }
+        })
+
+        public_chat_socket.onclose = function(e) {
+            console.error('Public ChatSocket closed.');
+        };
+
+        public_chat_socket.onOpen = function(e){
+            console.log("Public ChatSocket onOpen", e)
+        }
+
+        public_chat_socket.onerror = function(e){
+            console.log('Public ChatSocket error', e)
+        }
+
+        if (public_chat_socket.readyState == WebSocket.OPEN) {
+            console.log("Public ChatSocket OPEN")
+        } else if (public_chat_socket.readyState == WebSocket.CONNECTING){
+            console.log("Public ChatSocket connecting..")
+        }
+
+        document.getElementById('id_chat_message_input').focus();
+        document.getElementById('id_chat_message_input').onkeyup = function(e) {
+            if (e.keyCode === 13 && e.shiftKey) {  // enter + return
+                // Handled automatically by textarea
+            }
+            else if(e.keyCode === 13 && !e.shiftKey){ // enter + !return
+                document.getElementById('id_chat_message_submit').click();
+            }
+        };
+
+        document.getElementById('id_chat_message_submit').onclick = function(e) {
+            const messageInputDom = document.getElementById('id_chat_message_input');
+            const message = messageInputDom.value;
+            public_chat_socket.send(JSON.stringify({
+                "command": "send",
+                "message": message,
+                "room_id": "{{room_id}}"
+            }));
+            messageInputDom.value = '';
+        };
+
+        function setPageNumber(pageNumber) {
+            document.getElementById("id_page_number").innerHTML = pageNumber
+        }
+
+        function setPaginationExhausted() {
+            setPageNumber("-1")
+        }
+        
+        function getRoomChatMessages(){
+            var pageNumber = document.getElementById("id_page_number").innerHTML
+            if(pageNumber != "-1"){
+                setPageNumber("-1") // Do not allow any other queries while one is in progress
+                public_chat_socket.send(JSON.stringify({
+                    "command": "get_room_chat_messages",
+                    "room_id": "{{room_id}}",
+                    "page_number": pageNumber,
+                }));
+            }
+        }
+
+        function handleMessagesPayload(messages, new_page_number){
+            if(messages != null && messages != "undefined" && messages != "None"){
+                setPageNumber(new_page_number)
+                messages.forEach(function(message){
+                    appendChatMessage(message, true, false)
+                })
+            }
+            else{
+                setPaginationExhausted() // no more messages
+            }
+        }
+        
+        document.getElementById("id_chat_log").addEventListener("scroll", function(e){
+            var chatLog = document.getElementById("id_chat_log")
+            chatLog.addEventListener("scroll", function(e){
+                if ((Math.abs(chatLog.scrollTop) + 2) >= (chatLog.scrollHeight - chatLog.offsetHeight)) {
+                    getRoomChatMessages()
+                }
+            });
+        })
+
+        function appendChatMessage(data, maintainPosition, isNewMessage){
+            message = data['message']
+            uName = data['username']
+            user_id = data['user_id']
+            profile_image = data['profile_image']
+            timestamp = data['natural_timestamp']
+            
+            var msg = message + '\n';
+            var username = uName + ": "
+            createChatMessageElement(msg, username, profile_image, user_id, timestamp, maintainPosition, isNewMessage)
+        }
+    
+        function createChatMessageElement(msg, username, profile_image, user_id, timestamp, maintainPosition, isNewMessage){
+            var chatLog = document.getElementById("id_chat_log")
+    
+            var newMessageDiv = document.createElement("div")
+            newMessageDiv.classList.add("d-flex")
+            newMessageDiv.classList.add("flex-row")
+            newMessageDiv.classList.add("chat-box")
+    
+            var profileImage = document.createElement("img")
+            profileImage.addEventListener("click", function(e) {
+                selectUser(user_id)
+            })
+            profileImage.classList.add("profile-image")
+            profileImage.classList.add("rounded-circle")
+            profileImage.classList.add("img-fluid")
+            profileImage.src = profile_image
+            newMessageDiv.appendChild(profileImage)
+    
+            var div1 = document.createElement("div")
+            div1.classList.add("d-flex")
+            div1.classList.add("flex-column")
+            div1.classList.add("justify-cont")
+    
+            var div2 = document.createElement("div")
+            div2.classList.add("d-flex")
+            div2.classList.add("flex-row")
+            div2.classList.add("justify-cont")
+            div2.classList.add("name-cont")
+
+            var usernameSpan = document.createElement("span")
+            usernameSpan.addEventListener("click", function(e) {
+                selectUser(user_id)
+            })
+            usernameSpan.innerHTML = username
+            div2.appendChild(usernameSpan)
+            
+            /*время справа от ника*/
+            var timestampSpan = document.createElement("span")
+            timestampSpan.innerHTML = timestamp
+            timestampSpan.classList.add("timestamp-span")
+            timestampSpan.classList.add("d-flex")
+            timestampSpan.classList.add("align-items-center")
+            timestampSpan.addEventListener("click", function(e){
+                selectUser(user_id)
+            })
+            div2.appendChild(timestampSpan)
+
+
+
+            div1.appendChild(div2)
+    
+            var msgP = document.createElement("p")
+            msgP.innerHTML = validateText(msg)
+            msgP.classList.add("msg-p")
+            div1.appendChild(msgP)
+    
+            newMessageDiv.appendChild(div1)               
+
+            if(isNewMessage){
+                chatLog.insertBefore(newMessageDiv, chatLog.firstChild)
+            }
+            else{
+                chatLog.appendChild(newMessageDiv)
+            }
+    
+            if(!maintainPosition){
+                chatLog.scrollTop = chatLog.scrollHeight
+            }
+        }
+
+        function selectUser(user_id){
+            // Weird work-around for passing arg to url
+            var url = "{% url 'account:view' user_id=53252623623632623 %}".replace("53252623623632623", user_id)
+            var win = window.open(url, "_blank")
+            win.focus()
+        }
+
+        function showClientErrorModal(message){
+            document.getElementById("id_client_error_modal_body").innerHTML = message
+            document.getElementById("id_trigger_client_error_modal").click()
+        }
+
+        function displayChatroomLoadingSpinner(isDisplayed){
+            var spinner = document.getElementById("id_chatroom_loading_spinner")
+            if(isDisplayed){
+                spinner.style.display = "block"
+            }
+            else{
+                spinner.style.display = "none"
+            }
+        }
+
+        function setConnectedUsersCount(count){
+            element = document.getElementById("id_connected_users")
+            element.innerHTML = count
+        }
+    </script>
+
+
+
+<!-- Client Error MODAL -->
+<!--
+<button type="button" id="id_trigger_client_error_modal" class="d-none btn btn-primary" data-toggle="modal" data-target="#id_client_error_modal">
+</button>
+<div class="modal fade" id="id_client_error_modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Ошибка сокета клиента</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="id_client_error_modal_body">Неизвестная ошибка</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="id_client_error_modal_close_btn">Закрыть</button>
+      </div>
+    </div>
+  </div>
+</div>
+-->
+<!-- Client Error MODAL -->
+
+
+
+
+
+
+
+<!--       
+    <div class="background_category">
+        <div class="background">
+            <img src="{% static 'images/backgrounds/fon.png' %}" alt="">
+        </div>
+        <div class="category">
+            <ul class="lenta_nav">
+                <li>
+                    <a href="lenta.html">Рекомендации</a>
+                </li>
+                <li>
+                    <a href="lenta.html">Юмор</a>
+                </li>
+                <li>
+                    <a href="#">Арт</a>
+                </li>
+                <li>
+                    <a href="#">Кино</a>
+                </li>
+                <li>
+                    <a href="#">Спорт</a>
+                </li>
+                <li>
+                    <a href="#">Туризм</a>
+                </li>
+                <li>
+                    <a href="#">Игры</a>
+                </li>
+                <li>
+                    <a href="#">IT</a>
+                </li>
+                <li>
+                    <a href="#">Наука</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="posts">
+ POST 
+        <div class="post">
+            <div class="user-info">
+                <div class="img">
+                    <img src="/images/avatars/bogdan.PNG" alt="">
+                </div>
+                <div class="name-time">
+                    <p>Богдан Трофименко</p>
+                    <p>10 часов назад</p>
+                </div>
+            </div>
+            <div class="text">
+                <h1>Заголовок</h1>
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus quo, non quisquam labore ducimus placeat.
+                </p>
+            </div>
+            <div class="img">
+                <img src="/images/images/2.png" alt="">
+            </div>
+        </div>
+POST 
+    </div>
+-->
+
+</main>
+{% endblock content %}

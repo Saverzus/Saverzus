@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<main class="profile">
+    <!--
+    <div class="background-info">
+        <div class="avatar">
+            <img src="{{profile_image}}" alt="Аватар" id="id_profile_image">
+        </div>
+        <div class="background">
+            <img src="{% static 'images/backgrounds/fon.png' %}" alt="">
+        </div>
+        <div class="info">
+            <div class="name active">
+                <p>{{request.sender.username}}</p>
+                <p><i class="fas fa-circle online"></i></p>
+                
+            </div>
+            <div class="nav">
+                <ul>
+                    <li>
+                        <a href="#">Стена</a>
+                    </li>
+                    <li>
+                        <a href="friends.html">Друзья ({{friends|length}})</a>
+                    </li>
+                    <li>
+                        <a class="active" href="#">Заявки в друзья ({{friend_requests|length}})</a>
+                    </li>
+                    <li>
+                        <a href="photo.html">Фото</a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+    -->
+
+
+    <div class="friends-container">
+                
+        <div class="friends_list">
+        <!--
+            <div class="search_count">
+                <div class="search">
+                    <input type="text" placeholder="Поиск">
+                </div>
+                <div class="count">
+                    <p>Друзей - 3</p>
+                </div>
+            </div>-->
+
+            <div class="friends">
+                <!-- Друг -->
+            
+                {% if friend_requests %}
+                {% for request in friend_requests %}
+                <div class="friend">
+                    <a href="{% url 'account:view' user_id=request.sender.id %}" class="friend_a">
+                        <div class="avatar">
+                            <img src="{{request.sender.profile_image.url}}" alt="">
+                            
+                            <div class="friend_status">
+                                <p> <i class="fa fa-check-circle" aria-hidden="true"></i> </p>
+                                <!-- <p> <i class="fa fa-plus-circle" aria-hidden="true"></i> </p> -->
+                            </div>
+                        </div>
+                        <div class="background">
+                            <img src="{% static 'images/backgrounds/fon.png' %}" alt="">
+                        </div>
+
+                        <div class="name_status"> 
+                            <p>{{request.sender.username}}</p>              
+                            <p><i class="fas fa-circle online"></i></p>                                                                           
+                        </div>
+                    </a>
+                    
+                    <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+                        <span id="id_cancel_{{request.sender.id}}" style="cursor: pointer; padding: 1%;" onclick='triggerDeclineFriendRequest("{{request.id}}")'>Отменить</span>
+                        <span id="id_confirm_{{request.sender.id}}" style="cursor: pointer; padding: 1%" onclick='triggerAcceptFriendRequest("{{request.id}}")'>Принять</span>
+                    </div>
+                </div>
+                {% endfor %}
+                
+                {% else %}
+                    <div class="d-flex flex-row flex-grow-1 justify-content-center align-items-center p-4">
+                        <p>Нет заявок</p>
+                    </div>
+                {% endif %}
+            
+                <!-- Друг -->
+            </div>
+        </div>
+
+        <!-- <div class="friends_settings">
+            <a href="friends.html"><p>Мои друзья</p></a>
+            <a href="friends.html"><p>Заявки в друзья</p></a>
+            <a href="friends.html"><p>Поиск друзей</p></a>
+        </div> -->
+    </div>
+</main>
+
+
+<script type="text/javascript">
+
+	function onFriendRequestAccepted(){
+		location.reload();
+	}
+
+	function onFriendRequestDeclined(){
+		location.reload();
+	}
+
+	function triggerAcceptFriendRequest(friend_request_id){
+		acceptFriendRequest(friend_request_id, onFriendRequestAccepted)
+	}
+
+	function triggerDeclineFriendRequest(friend_request_id){
+		declineFriendRequest(friend_request_id, onFriendRequestDeclined)
+	}
+</script>
+
+{% include 'friend/snippets/accept_friend_request.html' %}
+{% include 'friend/snippets/decline_friend_request.html' %}
+
+
+{% endblock content %}

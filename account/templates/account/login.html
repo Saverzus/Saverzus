@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+        <main class="lenta authenticated_users">         
+            <!-- Регистрация -->
+			<div class="form-container sign-up-container">
+				<form method="post">
+                    {% csrf_token %}
+                    <h1>Войти</h1>
+					<input type="email" name="email" id="inputEmail" placeholder="Почта" autofocus>
+					<input type="password" name="password" id="inputPassword" placeholder="Пароль">
+					<!-- <a href="#">Забыли пароль?</a> -->
+					<button type="submit">Войти</button>
+
+					{% for field in registration_form %}
+				    <p>
+				    {% for error in field.errors %}
+				    <p style="color: red">{{ error }}</p>
+				    {% endfor %}
+			    	</p>
+			    	{% endfor %}
+			    	{% if registration_form.non_field_errors %}
+			    	<div style="color: red">
+			    		<p>{{registration_form.non_field_errors}}</p>
+			    	</div>
+			    	{% endif %}
+				</form>
+			</div>
+            
+        </main>
+
+{% endblock content %}

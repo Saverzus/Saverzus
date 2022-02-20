@@ -1,0 +1,226 @@
+{% load static %}
+
+<style type="text/css">
+    .search-box{
+        width: fit-content;
+        height: fit-content;
+        position: relative;
+      }
+      .input-search{
+        height: 50px;
+        width: 50px;
+        border-style: none;
+        padding: 10px;
+        font-size: 18px;
+        letter-spacing: 2px;
+        outline: none;
+        border-radius: 25px;
+        transition: all .5s ease-in-out;
+        background-color: #252936;
+        padding-right: 40px;
+        color:#fff;
+      }
+      .input-search::placeholder{
+        color:rgba(255,255,255,.5);
+        font-size: 18px;
+        letter-spacing: 2px;
+        font-weight: 100;
+      }
+      .btn-search{
+        width: 50px;
+        height: 50px;
+        border-style: none;
+        font-size: 20px;
+        font-weight: bold;
+        outline: none;
+        cursor: pointer;
+        border-radius: 50%;
+        position: absolute;
+        right: 0px;
+        color: #808191;
+        background-color:transparent;
+        pointer-events: painted;  
+      }
+
+      .btn-search:hover ~ .input-search{
+        width: 140px;
+        border-radius: 0px;
+        background-color: transparent;
+        border-bottom:1px solid rgba(255,255,255,.5);
+        transition: all 500ms cubic-bezier(0, 0.110, 0.35, 2);
+      }
+      .input-search:hover{
+        width: 140px;
+        border-radius: 0px;
+        background-color: transparent;
+        border-bottom:1px solid rgba(255,255,255,.5);
+        transition: all 500ms cubic-bezier(0, 0.110, 0.35, 2);
+      }
+</style>
+
+<header>
+
+    {% if request.user.is_authenticated %}
+
+    <div class="avatar-bell-logout">               
+        <div class="avatar-container">
+            <div class="avatar">
+                <img src="{{request.user.profile_image.url}}" alt="Это вы :)">
+            </div>
+        </div>
+        <div class="bell">
+            <p id="id_chat_notifications_container"><i class="fas fa-bell"></i></p>
+        </div>
+        <div class="logout">
+            <a href="{% url 'logout'%}"><p><i class="fas fa-sign-out-alt"></i></p></a>
+        </div>
+    </div>
+
+    <div class="search">
+        <!--
+        <form onsubmit="return executeQuery();">
+            <input type="text" class="form-control" name="q" id="id_q_small" placeholder="Поиск">
+        </form>
+        -->
+        
+        <div class="search-box">
+            <form onsubmit="return executeQuery();">          
+                <button class="btn-search"><i class="fas fa-search"></i></button>
+                <input type="text" class="input-search form-control" name="q" id="id_q_small" placeholder="Поиск">
+            </form>
+
+            
+        </div>
+        
+    </div>
+    
+    <div class="menu">
+        <h1 class="h1-menu">Меню</h1>
+        <nav>
+            <ul class="nav_menu_activator">
+                <li>
+                    <a href=" {% url 'account:view' user_id=request.user.id %} ">
+                        <div class="icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <div class="text1">
+                            <p>Профиль</p>
+                        </div>
+                        
+                    </a>
+                </li>
+                <li>
+                    <a href="/">
+                        <div class="icon">
+                            <i class="far fa-newspaper"></i>
+                        </div>
+                        <div class="text1">
+                            <p>Чат</p>
+                        </div>
+                        
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'chat:private-chat-room' %}">
+                        <div class="icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="text1">
+                            <p>Сообщения</p>
+                        </div>
+                        
+                    </a>
+                </li>
+                <!--
+                <li>
+                    <a href="video.html">
+                        <div class="icon">
+                            <i class="fas fa-film"></i>
+                        </div>
+                        <div class="text1">
+                            <p>Видео</p>
+                        </div>
+                        
+                    </a>
+                </li>
+                -->
+                <!--
+                <li>
+                    <a href="music.html">
+                        <div class="icon">
+                            <i class="fas fa-headphones"></i>
+                        </div>
+                        <div class="text1">
+                            <p>Музыка</p>
+                        </div>
+                        
+                    </a>
+                </li>
+                -->
+            </ul>
+        </nav>
+    </div>
+
+    {% else %}
+    <div class="avatar-bell-logout">               
+        <div class="avatar-container">
+            <a href="{% url 'login' %}" style="border: 1px solid #678191; border-radius: 10px; padding: 5px 10px;">Логин</a>
+        </div>
+        <div class="bell">
+            <a href="{% url 'register' %}" style="border: 1px solid #678191; border-radius: 10px; padding: 5px 10px;">Регистрация</a>
+        </div>
+    </div>
+    {% endif %}
+
+</header>
+
+<script type="text/javascript">
+    setupChatDropdownHeader()
+
+    function executeQuery(){
+        var query = document.getElementById("id_q_small").value
+        window.location.replace("{% url 'search' %}?q=" + query)
+        return false
+    }
+
+    /*
+		Add a header to the dropdown so users can visit /chat/
+	*/
+
+
+
+
+
+
+
+
+
+    /* ПОТОМ ТУТ СДЕЛАЮ, ЧТО БЫ ПОКАЗЫВАЛИСЬ УВЕДОМЛЕНИЯ (ниже код)
+
+	function setupChatDropdownHeader(){
+		var notificationContainer = document.getElementById("id_chat_notifications_container")
+
+		if(notificationContainer != null){
+
+			var div = document.createElement("div")
+			div.classList.add("chat-dropdown-header", "d-flex", "flex-row", "justify-content-end", "m-auto", "align-items-end")
+			div.addEventListener("click", function(e){
+				var url = "{% url 'chat:private-chat-room' %}"
+				chatRedirect(url)
+			})
+
+			span2 = document.createElement("span")
+			span2.classList.add("material-icons", "mr-2")
+			span2.innerHTML = "open_with"
+			div.appendChild(span2)
+			notificationContainer.appendChild(div)
+		}
+	}
+
+	function chatRedirect(url){
+		window.location.href = url
+	}
+    */
+
+
+</script>

@@ -1,0 +1,338 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style type="text/css">
+    .hide_input{
+        display:none;
+    }
+</style>
+
+        <main class="profile">
+            <div class="background-info">
+
+
+                <form class="form-signin" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="avatar" id="id_image_container">
+                    <img src="{{profile_image}}" id="id_profile_image_display">
+                    
+
+                    <div class="middle" id="id_middle_container">
+						<div class="text" id="id_text">Редактировать</div>
+                        <input class="hide_input" type="file" name="profile_image" id="id_profile_image" onchange="readURL(this)">
+					</div>
+                </div>
+                <div class="background">
+                    <img src="{% static 'images/backgrounds/fon.png' %}" alt="">
+                </div>
+                <div class="info">
+                    <div class="name active">
+                        <p><input type="text" name="username" id="id_input_username" class="form-control" placeholder="Username" required value="{{form.initial.username}}"></p>
+                        <p><i class="fas fa-circle online"></i></p>
+                        
+                    </div>
+                    <div class="nav">
+                        <ul>
+                            <li>
+                                <a class="active" href="profile.html">Стена</a>
+                            </li>
+                            <li>
+                                <a href="friends.html">Друзья</a>
+                            </li>
+                            <li>
+                                <a href="friends.html">Заявки в друзья</a>
+                            </li>
+                            <li>
+                                <a href="photo.html">Фото</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="email_and_change"> 
+                
+                    <p><input type="email" name="email" id="id_input_email" class="form-control" placeholder="Email address" required autofocus value={{form.initial.email}}></p>
+                    <p>
+                        <label>
+							<input type="checkbox" name="hide_email" id="id_input_hide_email" {% if form.initial.hide_email %} checked {% endif %}>
+							Скрыть почту
+						</label>
+                    </p>
+		  		    
+                    <div class="d-flex flex-column mt-4">
+                        <button class="mt-4 btn btn-primary flex-grow-1" type="submit">Сохранить</button>
+                    </div>
+            </div>
+
+            <p>
+                {% for field in form %}
+                    <p>
+                    {% for error in field.errors %}
+                    <p style="color: red">{{ error }}</p>
+                    {% endfor %}
+                    </p>
+                    {% endfor %}
+                    {% if form.non_field_errors %}
+                    <div style="color: red">
+                    <p>{{form.non_field_errors}}</p>
+                    </div>
+
+                {% endif %}
+            </p>
+
+            
+            </form>
+
+
+
+            <div class="new-post">
+                {% if is_friend == False and is_self == False %}
+						<!-- You sent them a request -->
+						{% if request_sent == 1 %}
+						<div class="d-flex flex-column align-items-center pt-4">
+							<button class="btn btn-danger" id="id_cancel_friend_request_btn">
+								Отменить заявку в друзья
+							</button>
+						</div>
+						{% endif %}
+						<!-- No requests have been sent -->
+						{% if request_sent == -1 %}
+						<div class="d-flex flex-column align-items-center pt-4">
+							<button class="btn btn-primary" id="id_send_friend_request_btn">
+								Добавить в друзья
+							</button>
+						</div>
+						{% endif %}
+				{% endif %}
+					
+					
+				{% if is_friend %}
+					<div class="dropdown pt-4 m-auto">
+						<button class="btn btn-secondary dropdown-toggle friends-btn" type="button" id="id_friends_toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Друг
+						</button>
+						<div class="dropdown-menu" aria-labelledby="id_friends_toggle">
+							<a class="dropdown-item" href="#" onclick="removeFriend('{{id}}', onFriendRemoved)">Удалить из друзей</a>
+						</div>
+					</div>
+				{% endif %}
+
+                <!-- TODO -->
+                {% if is_friend %}
+                    <div class="d-flex flex-row align-items-center btn btn-primary m-2 px-4" onclick="createOrReturnPrivateChat('{{id}}')">
+                        <span class="material-icons m-auto">
+                        Написать
+                        </span>
+                        <span class="message-btn-text m-auto pl-2">Написать</span>
+                    </div>
+                {% endif %}
+
+            </div>
+
+            <!--
+            <div class="new-post">
+                <div class="textarea">
+                    <textarea id="w3review" name="w3review" placeholder="Что нового?" rows="3" cols="50"></textarea>
+                </div>
+
+                <div class="settings">
+                    <div class="category-slug">
+                        <div class="category">
+                            <label for="cats">Категория</label>
+                            <select id="cats" >
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                            </select>
+                        </div>
+
+                        <div class="slug">
+                            <input type="text" value="Введите slug" name="slug" id="slug">
+                        </div>
+                    </div>
+
+                    <div class="send">
+                        <button type="submit" form="nameform" value="Submit">Поделиться</button>
+                    </div>
+                </div>
+            </div>
+            -->
+        <!--
+            <div class="add_to_friends" style="display: flex; margin: 20px 30px;">
+                <a href="#" style="color: white; border: 1px solid black; padding: 10px 20px; border-radius: 10px; background: #1F1D2B;"> Добавить пост</a>
+                <a href="#" style="color: white; border: 1px solid black; padding: 10px 20px; border-radius: 10px; background: #1F1D2B; margin-left: 10px;"> Добавить в друзья</a>
+                <a href="#" style="color: white; border: 1px solid black; padding: 10px 20px; border-radius: 10px; background: #1F1D2B; margin-left: 10px;"> Друзей - 10</a>
+            </div>
+        -->
+
+ <!--           
+            <div class="posts">
+
+                <div class="post">
+                    <div class="user-info">
+                        <div class="img">
+                            <img src="{{request.user.profile_image.url}}" alt="">
+                        </div>
+                        <div class="name-time">
+                            <p>Богдан Трофименко</p>
+                            <p>10 часов назад</p>
+                        </div>
+                    </div>
+                    <div class="text">
+                        <h1>Заголовок</h1>
+                        <p>
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus quo, non quisquam labore ducimus placeat.
+                        </p>
+                    </div>
+                    <div class="img">
+                        <img src="/images/images/2.png" alt="">
+                    </div>
+                </div>
+
+
+                <div class="post">
+                    <div class="user-info">
+                        <div class="img">
+                            <img src="{{request.user.profile_image.url}}" alt="">
+                        </div>
+                        <div class="name-time">
+                            <p>Богдан Трофименко</p>
+                            <p>10 часов назад</p>
+                        </div>
+                    </div>
+                    <div class="text">
+                        <h1>Заголовок</h1>
+                        <p>
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo expedita, ipsum accusantium maiores ratione aliquam?
+                        </p>
+                    </div>
+                    <div class="img">
+                        <img src="/images/images/3.png" alt="">
+                    </div>
+                </div>
+
+                <div class="post">
+                    <div class="user-info">
+                        <div class="img">
+                            <img src="{{request.user.profile_image.url}}" alt="">
+                        </div>
+                        <div class="name-time">
+                            <p>Богдан Трофименко</p>
+                            <p>10 часов назад</p>
+                        </div>
+                    </div>
+                    <div class="text">
+                        <h1>Заголовок</h1>
+                        <p>
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo expedita, ipsum accusantium maiores ratione aliquam?
+                        </p>
+                    </div>
+                    <div class="img">
+                        <img src="/images/images/3.png" alt="">
+                    </div>
+                </div>
+
+                <div class="post">
+                    <div class="user-info">
+                        <div class="img">
+                            <img src="{{request.user.profile_image.url}}" alt="">
+                        </div>
+                        <div class="name-time">
+                            <p>Богдан Трофименко</p>
+                            <p>10 часов назад</p>
+                        </div>
+                    </div>
+                    <div class="text">
+                        <h1>Заголовок</h1>
+                        <p>
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo expedita, ipsum accusantium maiores ratione aliquam?
+                        </p>
+                    </div>
+                    <div class="img">
+                        <img src="/images/images/3.png" alt="">
+                    </div>
+                </div>
+
+                <div class="post">
+                    <div class="user-info">
+                        <div class="img">
+                            <img src="{{request.user.profile_image.url}}" alt="">
+                        </div>
+                        <div class="name-time">
+                            <p>Богдан Трофименко</p>
+                            <p>10 часов назад</p>
+                        </div>
+                    </div>
+                    <div class="text">
+                        <h1>Заголовок</h1>
+                        <p>
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo expedita, ipsum accusantium maiores ratione aliquam?
+                        </p>
+                    </div>
+                    <div class="img">
+                        <img src="/images/images/3.png" alt="">
+                    </div>
+                </div>
+ -->
+            </div>
+        </main>
+
+
+
+<script type="text/javascript">
+    enableImageOverlay()
+
+    function enableImageOverlay(){
+        var text = document.getElementById("id_text")
+        text.style.backgroundColor = "#0066ff"
+        text.style.color = "white"
+        text.style.fontSize = "16px"
+        text.style.padding = "16px 32px"
+        text.style.cursor = "pointer"
+
+        var profileImage = document.getElementById("id_profile_image")
+        var middleContainer = document.getElementById("id_middle_container")
+        
+        middleContainer.style.opacity = "0"
+        middleContainer.style.position = "absolute"
+        middleContainer.style.top = "50%"
+        middleContainer.style.left = "50%"
+        middleContainer.style.transform = "translate(-50%, -50%)"
+        middleContainer.style.textAlign = "center"
+
+        var imageContainer = document.getElementById("id_image_container")
+        imageContainer.addEventListener("mouseover", function( event ) { 
+            profileImage.style.opacity = "0"
+            middleContainer.style.opacity = "1"
+        })
+
+        imageContainer.addEventListener("mouseout", function( event ) { 
+            profileImage.style.opacity = "0"
+            middleContainer.style.opacity = "1"
+        })
+
+        imageContainer.addEventListener("click", function(event){
+            document.getElementById('id_profile_image').click();
+        });
+
+        
+    }
+</script>
+
+{#% include 'snippets/send_friend_request.html' %#}
+{#% include 'snippets/accept_friend_request.html' %#}
+{#% include 'snippets/decline_friend_request.html' %#}
+{#% include 'snippets/cancel_friend_request.html' %#}
+{#% include 'snippets/remove_friend.html' %#}
+{#% include 'chat/create_or_return_private_chat.html' %#}
+
+
+
+
+{% endblock content %}
