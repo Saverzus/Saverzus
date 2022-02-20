@@ -13,8 +13,8 @@ application = ProtocolTypeRouter({
 		AuthMiddlewareStack(
             
 			URLRouter([
-				re_path(r'public_chat/(?P<room_id>\w+)/$', PublicChatConsumer.as_asgi()),
-				re_path(r'chat/(?P<room_id>\w+)/$', ChatConsumer.as_asgi()),
+				re_path(r'public_chat/(?P<room_id>\w+)/$', PublicChatConsumer),
+				re_path(r'chat/(?P<room_id>\w+)/$', ChatConsumer),
 			])
             
 		)
