@@ -43,7 +43,3 @@ urlpatterns = [
     path('register/', register_view, name="register"),
     path('search/', account_search_view, name="search"),
 ]
-
-if settings.DEBUG:
-    urlpatterns+= static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    urlpatterns+= static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
